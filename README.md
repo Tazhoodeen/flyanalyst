@@ -48,10 +48,10 @@ python3.11 -m venv .venv
 source .venv/bin/activate
 pip install -e '.[test]'
 python -m stonkfly prepare          # downloads MaleCNS v1.0
-python stonkfly/retail_run.py --db data/demo_sales.duckdb --weeks 26
+python stonkfly/retail_run.py --db demo/demo_sales.duckdb --weeks 26
 ```
 
-The bundled `data/demo_sales.duckdb` is **synthetic**: shaped like real retail
+The bundled `demo/demo_sales.duckdb` is **synthetic**: shaped like real retail
 weekly data, containing no real business figures. Point `--db` at your own
 checks database to run it on yours.
 
