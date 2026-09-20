@@ -1,39 +1,92 @@
-![Stonkfly: a pixel fly beside a candlestick chart](assets/stonkfly.png)
+# Flyanalyst
 
-# Stonkfly
+A fly-connectome simulation reading weekly retail sales charts. Real neural
+output, real shop data, **and a control that says it means nothing**.
 
-A fly-connectome simulation that can operate a crypto trading account. Actual neural output, actual Coinbase integration. Profitable learning has not been demonstrated.
+**Result up front:** the network signalled on 37% of real weeks and on
+31% ± 11 of the same weeks shuffled into random order. `z = +0.53`. Its
+reaction to a real retail business is statistically indistinguishable from its
+reaction to noise. That is the finding, and it was the point of building this.
 
-**How it works:** Public Coinbase prices become an RGB chart. It stimulates 3,335 brightness inputs and 811 R8 color inputs in the retained **MaleCNS v1.0 graph: 166,700 neurons, 25.6 million connections**. A fixed neural readout proposes buy, sell or hold. A custom **Coinbase AgentKit ActionProvider** checks limits and places spot orders through Coinbase Advanced.
+## How it works
 
-Positive portfolio P&L stimulates 15 identified PAM11 dopamine cells; negative P&L stimulates two PPL101 aversive dopamine cells. A candidate memory rule changes existing KC-to-MBON connections. These are engineered reinforcement signals, **not modeled pain receptors**. Synaptic changes do not establish that it learns to trade profitably. [Model and evidence](docs/model.md).
+Weekly revenue of a three-shop retail network becomes an RGB chart. It
+stimulates 3,335 brightness inputs and 811 R8 colour inputs in the retained
+**MaleCNS v1.0 graph: 166,700 neurons, 25.6 million connections**. A fixed
+neural readout of named descending neurons produces a verdict:
+
+| neurons | in a living fly | here |
+|---|---|---|
+| `DNp20` left vs right | steers turning | "week looks worse" vs "better" |
+| `DNpe017` | gating | whether to say anything at all |
+
+Those neurons are real and measured. The mapping onto retail is a convention
+imposed by this repository, not a discovery. Nothing in a fly's optic lobe
+evolved to read a sales chart.
+
+## The control is the experiment
+
+Every run scores the same weeks twice: in real order, and shuffled five times
+with different seeds. Shuffling keeps every value and destroys only the
+sequence. If the network reacts the same way to both, it is responding to the
+texture of a line rather than to the business behind it.
+
+It does react the same way. Five control runs ranged from 14.8% to 44.4%
+signalling, and the real 37% sits unremarkably inside that spread.
+
+⚠ **One control is not enough.** Seed 0 alone would have produced "the fly
+reacts twice as often to real data!" — 37% against 14.8%. The spread across
+seeds is what makes the comparison honest.
 
 ## Run it
 
-Python 3.11, a C++17 compiler, macOS/Linux. Allow several GB for the dataset and dependencies; 16 GB RAM recommended.
+Python 3.11, a C++17 compiler, macOS/Linux. Several GB for the dataset;
+16 GB RAM recommended.
 
 ```sh
 python3.11 -m venv .venv
 source .venv/bin/activate
 pip install -e '.[test]'
-python -m stonkfly prepare
-python -m stonkfly run
+python -m stonkfly prepare          # downloads MaleCNS v1.0
+python stonkfly/retail_run.py --db data/demo_sales.duckdb --weeks 26
 ```
 
-Default: **paper trades, real public BTC-USDC data, $100 simulated balance**. No key needed. Local logs, sensory images and resumable brain state go in `runs/paper/`. Ctrl-C stops it; the same command resumes.
+The bundled `data/demo_sales.duckdb` is **synthetic**: shaped like real retail
+weekly data, containing no real business figures. Point `--db` at your own
+checks database to run it on yours.
 
-For real orders, first create a dedicated Coinbase Advanced portfolio with **at most 100 USDC** and a portfolio-scoped **ECDSA API key with View + Trade, no Transfer**. Copy `.env.example` to `.env`, fill it in locally, then run these commands yourself:
+Options: `--metric revenue|checks|avg_check`, `--window` (weeks drawn per
+frame, default 13), `--seeds` (control repetitions, default 5).
 
-```sh
-python -m stonkfly run --live --preflight-only
-python -m stonkfly run --live
-```
+## Why 13 weeks per frame
 
-Defaults: $10 maximum order including reserved fees, 24 attempts/day, no shorts or leverage. A $20 drawdown stops new orders; **it does not liquidate holdings or cap further losses**. [Operation and recovery](docs/operations.md).
+Upstream keeps 100 ticks because crypto ticks arrive seconds apart and the
+chart is a texture. Weekly retail data is sparser. Measured on real data:
 
-```sh
-python -m stonkfly status
-python -m pytest -q
-```
+| weeks shown | pixels per week | readable |
+|---|---|---|
+| 143 | 2.1 | no |
+| 52 | 5.8 | no |
+| 26 | 11.8 | yes |
+| 13 | 24.5 | clearly |
 
-The repo does not come funded or connected to anyone’s account. Live execution needs your local credentials and explicit opt-in.
+13 also matches the baseline window a conventional significance test would
+use, so both look at the same stretch of history.
+
+## What this is not
+
+- Not an analyst. It does not analyse, understand or predict sales.
+- Not evidence that connectome simulations can do business analytics.
+- Not a product, and not validated for any business use.
+
+The honest version of the headline is: an impressive mechanism is not the same
+thing as a correct answer, and the only way to tell them apart is a control.
+
+## Credits
+
+Forked from [Stonkfly](https://github.com/nftechie/stonkfly), which is itself
+built on DOOMFLY's connectome importer, inferred visual projection, spiking
+kernel and plasticity. Connectome data: MaleCNS v1.0 (FlyEM / Janelia,
+Cambridge, MRC LMB, Google Research), CC-BY 4.0. See `THIRD_PARTY.md`.
+
+Code MIT, as upstream.
